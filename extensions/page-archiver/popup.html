@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Archiver</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="header-left">
+        <img src="icons/icon32.png" alt="Logo" class="logo">
+        <h1>Page Archiver</h1>
+      </div>
+      <button id="settingsBtn" class="icon-btn" title="Settings">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </header>
+
+    <!-- Page Info -->
+    <section id="pageInfo" class="page-info">
+      <div class="page-info-content">
+        <span class="page-title" id="pageTitle">No page loaded</span>
+        <span class="page-url" id="pageUrl"></span>
+      </div>
+    </section>
+
+    <!-- Save Options -->
+    <section id="saveSection" class="save-section">
+      <button id="saveBtn" class="save-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Save Page
+      </button>
+      <div class="save-options">
+        <label class="save-option active" data-type="full">
+          <input type="radio" name="saveType" value="full" checked>
+          <span class="option-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </span>
+          Full Page
+        </label>
+        <label class="save-option" data-type="screenshot">
+          <input type="radio" name="saveType" value="screenshot">
+          <span class="option-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          </span>
+          Screenshot
+        </label>
+        <label class="save-option" data-type="text">
+          <input type="radio" name="saveType" value="text">
+          <span class="option-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+          </span>
+          Text Only
+        </label>
+        <label class="save-option" data-type="reading">
+          <input type="radio" name="saveType" value="reading">
+          <span class="option-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          </span>
+          Reading Mode
+        </label>
+      </div>
+      <div id="progressBar" class="progress-bar hidden">
+        <div class="progress-fill" id="progressFill"></div>
+        <span class="progress-text" id="progressText">Saving...</span>
+      </div>
+      <div id="saveMessage" class="save-message hidden"></div>
+    </section>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" data-tab="archives">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg>
+        Archives
+        <span class="badge" id="archiveCount">0</span>
+      </button>
+      <button class="tab" data-tab="storage">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        Storage
+      </button>
+    </div>
+
+    <!-- Archives Tab -->
+    <section id="archivesTab" class="tab-content active">
+      <div class="search-bar">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="searchInput" placeholder="Search archives...">
+        <button id="clearSearch" class="icon-btn-sm hidden" title="Clear">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div id="archiveList" class="archive-list">
+        <div class="empty-state">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <p>No archives yet</p>
+          <span>Save your first page to get started</span>
+        </div>
+      </div>
+      <div class="archive-actions hidden" id="archiveActions">
+        <button id="exportAllBtn" class="action-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export All
+        </button>
+        <button id="clearAllBtn" class="action-btn danger">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          Clear All
+        </button>
+      </div>
+    </section>
+
+    <!-- Storage Tab -->
+    <section id="storageTab" class="tab-content">
+      <div class="storage-info">
+        <div class="storage-meter">
+          <div class="storage-bar">
+            <div class="storage-used" id="storageUsed"></div>
+          </div>
+          <div class="storage-labels">
+            <span id="storageUsedText">0 KB used</span>
+            <span id="storageTotalText">5 MB total</span>
+          </div>
+        </div>
+        <div class="storage-stats">
+          <div class="stat">
+            <span class="stat-value" id="totalArchives">0</span>
+            <span class="stat-label">Archives</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value" id="avgSize">0 KB</span>
+            <span class="stat-label">Avg Size</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value" id="oldestArchive">-</span>
+            <span class="stat-label">Oldest</span>
+          </div>
+        </div>
+      </div>
+      <div class="storage-actions">
+        <button id="cleanupBtn" class="action-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+          Cleanup Old Archives
+        </button>
+        <button id="importBtn" class="action-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Import
+        </button>
+        <button id="exportDataBtn" class="action-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export Data
+        </button>
+      </div>
+    </section>
+
+    <!-- Settings Panel -->
+    <div id="settingsPanel" class="settings-panel hidden">
+      <div class="settings-header">
+        <h2>Settings</h2>
+        <button id="closeSettings" class="icon-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="settings-body">
+        <div class="setting-item">
+          <div class="setting-info">
+            <span class="setting-label">Auto-save pages</span>
+            <span class="setting-desc">Automatically save pages you visit</span>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="autoSave">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="setting-item">
+          <div class="setting-info">
+            <span class="setting-label">Storage limit</span>
+            <span class="setting-desc">Maximum storage for archives (MB)</span>
+          </div>
+          <input type="number" id="storageLimit" class="setting-input" value="5" min="1" max="50">
+        </div>
+        <div class="setting-item">
+          <div class="setting-info">
+            <span class="setting-label">Auto-cleanup</span>
+            <span class="setting-desc">Remove archives older than</span>
+          </div>
+          <select id="autoCleanup" class="setting-select">
+            <option value="0">Never</option>
+            <option value="7">7 days</option>
+            <option value="30" selected>30 days</option>
+            <option value="90">90 days</option>
+            <option value="180">180 days</option>
+          </select>
+        </div>
+        <div class="setting-item">
+          <div class="setting-info">
+            <span class="setting-label">Default save type</span>
+            <span class="setting-desc">Preferred save format</span>
+          </div>
+          <select id="defaultSaveType" class="setting-select">
+            <option value="full">Full Page</option>
+            <option value="screenshot">Screenshot</option>
+            <option value="text">Text Only</option>
+            <option value="reading">Reading Mode</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reading Mode Overlay -->
+    <div id="readingOverlay" class="reading-overlay hidden">
+      <div class="reading-header">
+        <button id="closeReading" class="icon-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <span class="reading-title" id="readingTitle"></span>
+        <div class="reading-controls">
+          <button id="fontDecrease" class="icon-btn-sm" title="Decrease font">A-</button>
+          <button id="fontIncrease" class="icon-btn-sm" title="Increase font">A+</button>
+        </div>
+      </div>
+      <div class="reading-content" id="readingContent"></div>
+    </div>
+  </div>
+
+  <input type="file" id="importFile" accept=".json" class="hidden">
+
+  <script src="storage-manager.js"></script>
+  <script src="page-saver.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

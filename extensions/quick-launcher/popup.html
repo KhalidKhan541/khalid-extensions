@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quick Launcher</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div id="app">
+    <div class="search-container">
+      <div class="search-bar">
+        <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input type="text" id="search-input" placeholder="Search bookmarks, tabs, history, or type a command..." autocomplete="off" spellcheck="false">
+        <div class="search-badges">
+          <kbd>Ctrl+Shift+Space</kbd>
+        </div>
+      </div>
+    </div>
+
+    <div id="quick-actions" class="section">
+      <div class="section-header">
+        <span class="section-title">Quick Actions</span>
+      </div>
+      <div class="actions-grid" id="quick-actions-grid"></div>
+    </div>
+
+    <div id="favorites-section" class="section">
+      <div class="section-header">
+        <span class="section-title">Favorites</span>
+        <button class="edit-btn" id="edit-favorites" title="Edit favorites">Edit</button>
+      </div>
+      <div class="favorites-grid" id="favorites-grid"></div>
+    </div>
+
+    <div id="recent-section" class="section">
+      <div class="section-header">
+        <span class="section-title">Recent Sites</span>
+      </div>
+      <div class="recent-list" id="recent-list"></div>
+    </div>
+
+    <div id="results-section" class="section hidden">
+      <div class="results-list" id="results-list"></div>
+    </div>
+
+    <div id="tools-section" class="section hidden">
+      <div class="section-header">
+        <span class="section-title" id="tools-title">Tool</span>
+        <button class="edit-btn" id="tools-back" title="Back to results">Back</button>
+      </div>
+      <div class="tool-content" id="tool-content"></div>
+    </div>
+
+    <div id="clipboard-section" class="section hidden">
+      <div class="section-header">
+        <span class="section-title">Clipboard History</span>
+      </div>
+      <div class="clipboard-list" id="clipboard-list"></div>
+    </div>
+
+    <div class="footer">
+      <div class="footer-hints">
+        <span><kbd>↑↓</kbd> Navigate</span>
+        <span><kbd>Enter</kbd> Open</span>
+        <span><kbd>Esc</kbd> Close</span>
+        <span><kbd>1-9</kbd> Fav</span>
+        <span class="theme-toggle" id="theme-toggle" title="Toggle theme">
+          <svg id="theme-icon-light" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          <svg id="theme-icon-dark" class="hidden" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <script src="utils.js"></script>
+  <script src="search.js"></script>
+  <script src="commands.js"></script>
+  <script src="popup.js" type="module"></script>
+</body>
+</html>

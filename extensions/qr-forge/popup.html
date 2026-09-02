@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Forge</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body class="dark">
+  <div class="app">
+    <header class="header">
+      <div class="logo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <rect x="2" y="2" width="8" height="8" rx="1" fill="currentColor"/>
+          <rect x="14" y="2" width="8" height="8" rx="1" fill="currentColor"/>
+          <rect x="2" y="14" width="8" height="8" rx="1" fill="currentColor"/>
+          <rect x="4" y="4" width="4" height="4" rx="0.5" fill="var(--bg)"/>
+          <rect x="16" y="4" width="4" height="4" rx="0.5" fill="var(--bg)"/>
+          <rect x="4" y="16" width="4" height="4" rx="0.5" fill="var(--bg)"/>
+          <rect x="5.5" y="5.5" width="1" height="1" fill="currentColor"/>
+          <rect x="17.5" y="5.5" width="1" height="1" fill="currentColor"/>
+          <rect x="5.5" y="17.5" width="1" height="1" fill="currentColor"/>
+          <rect x="14" y="14" width="3" height="3" fill="currentColor"/>
+          <rect x="19" y="14" width="3" height="3" fill="currentColor"/>
+          <rect x="14" y="19" width="3" height="3" fill="currentColor"/>
+          <rect x="19" y="19" width="3" height="3" fill="currentColor"/>
+        </svg>
+        <h1>QR Forge</h1>
+      </div>
+      <div class="header-actions">
+        <button id="themeToggle" class="icon-btn" title="Toggle theme">
+          <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="qr">QR Code</button>
+      <button class="tab" data-tab="barcode">Barcode</button>
+      <button class="tab" data-tab="quick">Quick</button>
+    </div>
+
+    <div class="tab-content active" id="tab-qr">
+      <div class="input-group">
+        <label for="qrInput">Text or URL</label>
+        <textarea id="qrInput" rows="3" placeholder="Enter text or URL..."></textarea>
+      </div>
+
+      <div class="preview-container">
+        <canvas id="qrCanvas"></canvas>
+        <div id="qrPreview" class="qr-preview"></div>
+      </div>
+
+      <div class="options-grid">
+        <div class="option">
+          <label for="qrSize">Size</label>
+          <select id="qrSize">
+            <option value="S">Small (200px)</option>
+            <option value="M" selected>Medium (300px)</option>
+            <option value="L">Large (400px)</option>
+            <option value="XL">X-Large (500px)</option>
+          </select>
+        </div>
+        <div class="option">
+          <label for="ecLevel">Error Correction</label>
+          <select id="ecLevel">
+            <option value="L">Low (7%)</option>
+            <option value="M" selected>Medium (15%)</option>
+            <option value="Q">Quartile (25%)</option>
+            <option value="H">High (30%)</option>
+          </select>
+        </div>
+        <div class="option">
+          <label for="fgColor">Foreground</label>
+          <div class="color-input">
+            <input type="color" id="fgColor" value="#000000">
+            <span id="fgColorHex">#000000</span>
+          </div>
+        </div>
+        <div class="option">
+          <label for="bgColor">Background</label>
+          <div class="color-input">
+            <input type="color" id="bgColor" value="#ffffff">
+            <span id="bgColorHex">#ffffff</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="option-row">
+        <label class="checkbox-label">
+          <input type="checkbox" id="urlShorten">
+          <span class="checkmark"></span>
+          Shorten URL
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="logoEmbed">
+          <span class="checkmark"></span>
+          Embed Logo
+        </label>
+      </div>
+
+      <div id="logoUpload" class="logo-upload hidden">
+        <label for="logoFile" class="upload-label">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          Choose Logo Image
+        </label>
+        <input type="file" id="logoFile" accept="image/*" class="hidden">
+      </div>
+
+      <div class="actions">
+        <button id="downloadPng" class="btn btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          PNG
+        </button>
+        <button id="downloadSvg" class="btn btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          SVG
+        </button>
+        <button id="copyBtn" class="btn btn-secondary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy
+        </button>
+        <button id="printBtn" class="btn btn-secondary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Print
+        </button>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-barcode">
+      <div class="input-group">
+        <label for="barcodeInput">Barcode Data</label>
+        <input type="text" id="barcodeInput" placeholder="Enter data...">
+      </div>
+      <div class="input-group">
+        <label for="barcodeType">Barcode Type</label>
+        <select id="barcodeType">
+          <option value="CODE128">Code 128</option>
+          <option value="CODE39">Code 39</option>
+          <option value="EAN13">EAN-13</option>
+          <option value="UPCA">UPC-A</option>
+        </select>
+      </div>
+      <div class="preview-container">
+        <canvas id="barcodeCanvas"></canvas>
+      </div>
+      <div class="actions">
+        <button id="barcodeDownloadPng" class="btn btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download PNG
+        </button>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-quick">
+      <div class="quick-options">
+        <button class="quick-btn" data-type="wifi">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+          WiFi
+        </button>
+        <button class="quick-btn" data-type="vcard">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          vCard
+        </button>
+        <button class="quick-btn" data-type="email">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Email
+        </button>
+        <button class="quick-btn" data-type="phone">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          Phone
+        </button>
+        <button class="quick-btn" data-type="sms">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          SMS
+        </button>
+      </div>
+
+      <div id="quickForm" class="quick-form hidden">
+        <button id="quickBack" class="icon-btn back-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          Back
+        </button>
+
+        <div id="wifiForm" class="form-fields hidden">
+          <div class="input-group"><label>SSID</label><input type="text" id="wifiSsid" placeholder="Network name"></div>
+          <div class="input-group"><label>Password</label><input type="text" id="wifiPass" placeholder="Password"></div>
+          <div class="input-group">
+            <label>Encryption</label>
+            <select id="wifiEnc"><option value="WPA">WPA/WPA2</option><option value="WEP">WEP</option><option value="nopass">None</option></select>
+          </div>
+        </div>
+
+        <div id="vcardForm" class="form-fields hidden">
+          <div class="input-group"><label>Full Name</label><input type="text" id="vcardName" placeholder="John Doe"></div>
+          <div class="input-group"><label>Phone</label><input type="tel" id="vcardPhone" placeholder="+1234567890"></div>
+          <div class="input-group"><label>Email</label><input type="email" id="vcardEmail" placeholder="john@example.com"></div>
+          <div class="input-group"><label>Organization</label><input type="text" id="vcardOrg" placeholder="Company Inc."></div>
+        </div>
+
+        <div id="emailForm" class="form-fields hidden">
+          <div class="input-group"><label>To</label><input type="email" id="emailTo" placeholder="recipient@example.com"></div>
+          <div class="input-group"><label>Subject</label><input type="text" id="emailSubject" placeholder="Email subject"></div>
+          <div class="input-group"><label>Body</label><textarea id="emailBody" rows="3" placeholder="Email body..."></textarea></div>
+        </div>
+
+        <div id="phoneForm" class="form-fields hidden">
+          <div class="input-group"><label>Phone Number</label><input type="tel" id="phoneNum" placeholder="+1234567890"></div>
+        </div>
+
+        <div id="smsForm" class="form-fields hidden">
+          <div class="input-group"><label>Phone Number</label><input type="tel" id="smsNum" placeholder="+1234567890"></div>
+          <div class="input-group"><label>Message</label><textarea id="smsMsg" rows="3" placeholder="Message..."></textarea></div>
+        </div>
+
+        <button id="generateQuick" class="btn btn-primary full-width">Generate QR Code</button>
+      </div>
+    </div>
+
+    <div class="recent-section">
+      <div class="recent-header">
+        <h3>Recent</h3>
+        <button id="clearRecent" class="icon-btn" title="Clear history">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        </button>
+      </div>
+      <div id="recentList" class="recent-list">
+        <p class="empty-state">No recent codes</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="qr-generator.js"></script>
+  <script src="barcode-generator.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

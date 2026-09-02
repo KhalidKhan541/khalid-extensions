@@ -1,0 +1,2 @@
+﻿chrome.runtime.onInstalled.addListener(()=>{chrome.storage.local.get("settings",s=>{if(!s.settings)chrome.storage.local.set({settings:{theme:"dark",enabled:true}})})});
+chrome.runtime.onMessage.addListener((msg,s,send)=>{if(msg.type==="GET_SETTINGS"){chrome.storage.local.get("settings",s=>send(s.settings||{}))}if(msg.type==="SAVE_SETTINGS"){chrome.storage.local.set({settings:msg.data},()=>send({success:true}))}return true});

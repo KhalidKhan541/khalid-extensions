@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dark Mode Plus</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="logo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" fill="url(#grad1)"/>
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18V4c4.41 0 8 3.59 8 8s-3.59 8-8 8z" fill="#1a1a2e" opacity="0.3"/>
+          <defs>
+            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#667eea"/>
+              <stop offset="100%" style="stop-color:#764ba2"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <h1>Dark Mode Plus</h1>
+      </div>
+      <button id="settingsBtn" class="icon-btn" title="Settings">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+        </svg>
+      </button>
+    </header>
+
+    <div id="mainView" class="view active">
+      <div class="theme-toggle-section">
+        <label class="toggle-label">Dark Mode</label>
+        <div class="toggle-group">
+          <button class="toggle-btn" data-theme="light">Light</button>
+          <button class="toggle-btn active" data-theme="dark">Dark</button>
+          <button class="toggle-btn" data-theme="system">System</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">This Site</span>
+          <span id="currentSite" class="site-badge">example.com</span>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <label class="toggle-label">Dark Mode</label>
+            <label class="switch">
+              <input type="checkbox" id="perSiteToggle" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="row">
+            <label class="toggle-label">Whitelist (Stay Light)</label>
+            <label class="switch">
+              <input type="checkbox" id="whitelistToggle">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Adjustments</span>
+        </div>
+        <div class="card-body">
+          <div class="slider-row">
+            <label>Brightness</label>
+            <input type="range" id="brightnessSlider" min="0" max="100" value="100">
+            <span id="brightnessValue">100%</span>
+          </div>
+          <div class="slider-row">
+            <label>Contrast</label>
+            <input type="range" id="contrastSlider" min="0" max="200" value="100">
+            <span id="contrastValue">100%</span>
+          </div>
+          <div class="row">
+            <label class="toggle-label">Dim Images</label>
+            <label class="switch">
+              <input type="checkbox" id="dimImagesToggle">
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="row">
+            <label class="toggle-label">Font Anti-aliasing</label>
+            <label class="switch">
+              <input type="checkbox" id="fontSmoothingToggle">
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="slider-row">
+            <label>Transition Speed</label>
+            <select id="transitionSelect">
+              <option value="0">Instant</option>
+              <option value="0.3" selected>Smooth (0.3s)</option>
+              <option value="1">Slow (1s)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header expandable" id="scheduleHeader">
+          <span class="card-title">Schedule</span>
+          <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </div>
+        <div class="card-body collapsed" id="scheduleBody">
+          <div class="row">
+            <label class="toggle-label">Auto Enable</label>
+            <label class="switch">
+              <input type="checkbox" id="scheduleToggle">
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="schedule-options">
+            <label class="radio-row">
+              <input type="radio" name="scheduleType" value="sunset" checked>
+              <span>Sunset to Sunrise</span>
+            </label>
+            <label class="radio-row">
+              <input type="radio" name="scheduleType" value="custom">
+              <span>Custom Times</span>
+            </label>
+            <div id="customTimes" class="custom-times collapsed">
+              <div class="time-row">
+                <label>Enable at</label>
+                <input type="time" id="scheduleOnTime" value="18:00">
+              </div>
+              <div class="time-row">
+                <label>Disable at</label>
+                <input type="time" id="scheduleOffTime" value="07:00">
+              </div>
+            </div>
+            <div class="time-row">
+              <label>Location for Sunset/Sunrise</label>
+              <div class="location-input">
+                <input type="text" id="locationInput" placeholder="e.g. New York or 40.7,-74.0" class="text-input">
+                <button id="detectLocationBtn" class="small-btn" title="Detect my location">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header expandable" id="customCSSHeader">
+          <span class="card-title">Custom CSS (Advanced)</span>
+          <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </div>
+        <div class="card-body collapsed" id="customCSSBody">
+          <textarea id="customCSSEditor" class="css-editor" placeholder="/* Add custom CSS for dark mode */
+body { background: #1a1a2e !important; }
+.header { border-bottom: 1px solid #333 !important; }"></textarea>
+          <div class="editor-actions">
+            <button id="applyCustomCSS" class="btn btn-primary">Apply</button>
+            <button id="resetCustomCSS" class="btn btn-secondary">Reset</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats-section">
+        <div class="stat">
+          <span class="stat-value" id="sitesDarkened">0</span>
+          <span class="stat-label">Sites Darkened</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="hoursUsed">0</span>
+          <span class="stat-label">Hours Used</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="settingsView" class="view">
+      <div class="settings-header">
+        <button id="backBtn" class="icon-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+        </button>
+        <h2>Settings</h2>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Whitelisted Sites</span>
+        </div>
+        <div class="card-body">
+          <div id="whitelistContainer" class="list-container">
+            <p class="empty-state">No whitelisted sites yet</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Per-Site Settings</span>
+        </div>
+        <div class="card-body">
+          <div id="perSiteContainer" class="list-container">
+            <p class="empty-state">No custom per-site settings</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Import / Export</span>
+        </div>
+        <div class="card-body">
+          <div class="row gap">
+            <button id="exportBtn" class="btn btn-secondary">Export Settings</button>
+            <button id="importBtn" class="btn btn-secondary">Import Settings</button>
+          </div>
+          <input type="file" id="importFile" accept=".json" style="display:none">
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <button id="resetAllBtn" class="btn btn-danger">Reset All Settings</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

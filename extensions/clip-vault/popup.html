@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClipVault</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="app" id="app">
+    <header class="header">
+      <div class="header-top">
+        <div class="logo">
+          <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+          </svg>
+          <h1>ClipVault</h1>
+        </div>
+        <div class="header-actions">
+          <button class="icon-btn" id="btnMultiSelect" title="Multi-select mode">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9 11 12 14 22 4"/>
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+            </svg>
+          </button>
+          <button class="icon-btn" id="btnSettings" title="Settings">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+          </button>
+          <button class="icon-btn" id="btnStats" title="Statistics">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="search-container">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="text" id="searchInput" placeholder="Search clips... (Ctrl+F)" autocomplete="off">
+        <button class="icon-btn search-clear" id="btnClearSearch" style="display:none">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="filter-bar">
+        <select id="filterType" class="filter-select">
+          <option value="all">All Types</option>
+          <option value="text">Text</option>
+          <option value="code">Code</option>
+          <option value="image">Images</option>
+          <option value="link">Links</option>
+        </select>
+        <select id="filterFolder" class="filter-select">
+          <option value="all">All Folders</option>
+          <option value="unsorted">Unsorted</option>
+        </select>
+        <select id="filterSort" class="filter-select">
+          <option value="newest">Newest First</option>
+          <option value="oldest">Oldest First</option>
+          <option value="most-copied">Most Copied</option>
+          <option value="alpha">A-Z</option>
+        </select>
+      </div>
+    </header>
+
+    <div class="toolbar" id="toolbar" style="display:none">
+      <span class="selected-count" id="selectedCount">0 selected</span>
+      <button class="btn-sm" id="btnCopySelected">Copy</button>
+      <button class="btn-sm btn-danger" id="btnDeleteSelected">Delete</button>
+      <button class="btn-sm" id="btnMoveSelected">Move</button>
+      <button class="btn-sm" id="btnPinSelected">Pin</button>
+      <button class="btn-sm" id="btnDeselectAll">Deselect All</button>
+    </div>
+
+    <div class="folder-bar" id="folderBar">
+      <button class="folder-tab active" data-folder="all">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+        </svg>
+        All
+      </button>
+      <button class="folder-tab" data-folder="pinned">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+          <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z"/>
+        </svg>
+        Pinned
+      </button>
+      <div class="folder-tabs" id="folderTabs"></div>
+      <button class="folder-tab add-folder" id="btnAddFolder" title="Create folder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+      </button>
+    </div>
+
+    <main class="main">
+      <div class="clip-list" id="clipList">
+        <div class="empty-state" id="emptyState">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48">
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+          </svg>
+          <p>No clips yet</p>
+          <span>Copy something to get started</span>
+        </div>
+      </div>
+      <div class="clip-viewer" id="clipViewer" style="display:none">
+        <div class="viewer-header">
+          <span class="viewer-title" id="viewerTitle">Clip Details</span>
+          <div class="viewer-actions">
+            <button class="icon-btn" id="btnViewerCopy" title="Copy to clipboard">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+            </button>
+            <button class="icon-btn" id="btnViewerPin" title="Pin">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z"/>
+              </svg>
+            </button>
+            <button class="icon-btn" id="btnViewerEdit" title="Edit">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+              </svg>
+            </button>
+            <button class="icon-btn" id="btnViewerDelete" title="Delete">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+              </svg>
+            </button>
+            <button class="icon-btn" id="btnViewerClose" title="Close">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="viewer-meta" id="viewerMeta"></div>
+        <div class="viewer-content" id="viewerContent"></div>
+      </div>
+    </main>
+
+    <div class="context-menu" id="contextMenu" style="display:none">
+      <button class="ctx-item" data-action="copy">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+        </svg>
+        Copy
+      </button>
+      <button class="ctx-item" data-action="pin">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+          <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z"/>
+        </svg>
+        <span id="ctxPinLabel">Pin</span>
+      </button>
+      <button class="ctx-item" data-action="edit">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+        </svg>
+        Edit
+      </button>
+      <button class="ctx-item" data-action="move">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+        </svg>
+        Move to...
+      </button>
+      <div class="ctx-separator"></div>
+      <button class="ctx-item" data-action="select">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+          <polyline points="9 11 12 14 22 4"/>
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+        </svg>
+        Select
+      </button>
+      <button class="ctx-item" data-action="view">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+        </svg>
+        View Full
+      </button>
+      <div class="ctx-separator"></div>
+      <button class="ctx-item ctx-danger" data-action="delete">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+          <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+        </svg>
+        Delete
+      </button>
+    </div>
+
+    <div class="move-menu" id="moveMenu" style="display:none">
+      <div class="move-header">Move to folder</div>
+      <div class="move-list" id="moveList"></div>
+    </div>
+
+    <div class="settings-panel" id="settingsPanel" style="display:none">
+      <div class="panel-header">
+        <h2>Settings</h2>
+        <button class="icon-btn" id="btnCloseSettings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="settings-body">
+        <div class="setting-group">
+          <label>Max History Size</label>
+          <select id="settingMaxSize" class="setting-input">
+            <option value="50">50 clips</option>
+            <option value="100" selected>100 clips</option>
+            <option value="200">200 clips</option>
+            <option value="500">500 clips</option>
+            <option value="1000">1000 clips</option>
+          </select>
+        </div>
+        <div class="setting-group">
+          <label>Auto-clear clips older than</label>
+          <select id="settingAutoClear" class="setting-input">
+            <option value="0">Never</option>
+            <option value="1">1 day</option>
+            <option value="7" selected>7 days</option>
+            <option value="30">30 days</option>
+            <option value="90">90 days</option>
+          </select>
+        </div>
+        <div class="setting-group">
+          <label>
+            <input type="checkbox" id="settingInterceptCopy" checked>
+            Intercept Ctrl+C copies
+          </label>
+        </div>
+        <div class="setting-group">
+          <label>
+            <input type="checkbox" id="settingInterceptRightClick" checked>
+            Intercept right-click copy
+          </label>
+        </div>
+        <div class="setting-group">
+          <label>
+            <input type="checkbox" id="settingPollClipboard">
+            Monitor clipboard via polling
+          </label>
+        </div>
+        <div class="setting-group">
+          <label>
+            <input type="checkbox" id="settingShowBadge" checked>
+            Show clip count badge
+          </label>
+        </div>
+        <div class="setting-group">
+          <label>Excluded sites (one per line)</label>
+          <textarea id="settingExcludedSites" class="setting-textarea" placeholder="example.com&#10;bank.com"></textarea>
+        </div>
+        <div class="setting-actions">
+          <button class="btn" id="btnExport">Export Data</button>
+          <button class="btn" id="btnImport">Import Data</button>
+          <button class="btn btn-danger" id="btnClearAll">Clear All Clips</button>
+        </div>
+        <input type="file" id="importFile" accept=".json" style="display:none">
+      </div>
+    </div>
+
+    <div class="stats-panel" id="statsPanel" style="display:none">
+      <div class="panel-header">
+        <h2>Statistics</h2>
+        <button class="icon-btn" id="btnCloseStats">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="stats-body">
+        <div class="stat-card">
+          <span class="stat-value" id="statTotal">0</span>
+          <span class="stat-label">Total Clips</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="statToday">0</span>
+          <span class="stat-label">Clips Today</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="statPinned">0</span>
+          <span class="stat-label">Pinned</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="statCopied">0</span>
+          <span class="stat-label">Times Copied</span>
+        </div>
+        <div class="stat-card full-width">
+          <span class="stat-label">Most Copied Clip</span>
+          <span class="stat-value small" id="statMostCopied">-</span>
+        </div>
+        <div class="stat-card full-width">
+          <span class="stat-label">Storage Used</span>
+          <span class="stat-value small" id="statStorage">0 KB</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" style="display:none"></div>
+  </div>
+
+  <script src="storage.js"></script>
+  <script src="highlight.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

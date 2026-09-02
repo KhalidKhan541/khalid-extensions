@@ -1,0 +1,1 @@
+﻿(function(){chrome.runtime.onMessage.addListener((msg,s,send)=>{if(msg.type==="ANALYZE"){send({url:location.href,title:document.title,body:document.body.innerText.substring(0,500),links:document.querySelectorAll("a").length,images:document.querySelectorAll("img").length})}return true)})()

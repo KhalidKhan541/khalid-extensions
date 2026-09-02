@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head><title>Icon Generator</title></head>
+<body>
+<p>Open this page in a browser to generate PNG icons. They will download automatically.</p>
+<script>
+const sizes = [16, 48, 128];
+const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <rect width="128" height="128" rx="24" fill="#4285f4"/>
+  <path d="M32 20h64a4 4 0 014 4v80l-36-18-36 18V24a4 4 0 014-4z" fill="#fff" opacity="0.9"/>
+  <path d="M52 56h24M64 44v24" stroke="#4285f4" stroke-width="5" stroke-linecap="round"/>
+</svg>`;
+
+sizes.forEach(size => {
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  const img = new Image();
+  img.onload = () => {
+    ctx.drawImage(img, 0, 0, size, size);
+    const a = document.createElement('a');
+    a.download = `icon${size}.png`;
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+  };
+  img.src = 'data:image/svg+xml;base64,' + btoa(svg);
+});
+</script>
+</body>
+</html>

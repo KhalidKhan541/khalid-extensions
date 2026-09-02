@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Color Craft</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="header">
+    <h1>Color Craft</h1>
+    <div class="header-actions">
+      <button class="icon-btn" id="btnRandom" title="Random Color">🎲</button>
+      <button class="icon-btn" id="btnEyedropper" title="Eyedropper">💧</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="picker">Picker</button>
+    <button class="tab" data-tab="palettes">Palettes</button>
+    <button class="tab" data-tab="contrast">Contrast</button>
+    <button class="tab" data-tab="harmony">Harmony</button>
+    <button class="tab" data-tab="mixer">Mixer</button>
+    <button class="tab" data-tab="accessibility">A11y</button>
+  </div>
+
+  <!-- Picker Panel -->
+  <div class="panel active" id="panel-picker">
+    <div class="color-preview" id="colorPreview" title="Click to copy HEX">
+      <span id="previewText">#E94560</span>
+    </div>
+
+    <div class="color-inputs">
+      <div class="input-group full">
+        <label>HEX</label>
+        <input type="text" id="inputHex" value="#E94560" maxlength="7">
+      </div>
+      <div class="input-group">
+        <label>R</label>
+        <input type="number" id="inputR" min="0" max="255" value="233">
+      </div>
+      <div class="input-group">
+        <label>G</label>
+        <input type="number" id="inputG" min="0" max="255" value="69">
+      </div>
+      <div class="input-group">
+        <label>B</label>
+        <input type="number" id="inputB" min="0" max="255" value="96">
+      </div>
+      <div class="input-group">
+        <label>H</label>
+        <input type="number" id="inputH" min="0" max="360" value="350">
+      </div>
+      <div class="input-group">
+        <label>S% </label>
+        <input type="number" id="inputS" min="0" max="100" value="79">
+      </div>
+      <div class="input-group">
+        <label>L%</label>
+        <input type="number" id="inputL" min="0" max="100" value="59">
+      </div>
+    </div>
+
+    <div class="action-buttons">
+      <button class="btn btn-primary" id="btnEyedropper2">💧 Eyedropper</button>
+      <button class="btn btn-secondary" id="btnFav">⭐ Favorite</button>
+      <button class="btn btn-secondary" id="btnCopyHex">Copy HEX</button>
+      <button class="btn btn-secondary" id="btnCopyRgb">Copy RGB</button>
+      <button class="btn btn-secondary" id="btnCopyHsl">Copy HSL</button>
+    </div>
+
+    <div class="section-title">
+      <span>Color History</span>
+      <button class="btn btn-sm btn-secondary" id="btnClearHistory">Clear</button>
+    </div>
+    <div class="history-grid" id="historyGrid"></div>
+
+    <div class="section-title">
+      <span>Favorites</span>
+      <button class="btn btn-sm btn-secondary" id="btnClearFavs">Clear</button>
+    </div>
+    <div class="favorites-grid" id="favoritesGrid"></div>
+  </div>
+
+  <!-- Palettes Panel -->
+  <div class="panel" id="panel-palettes">
+    <div class="action-buttons">
+      <button class="btn btn-primary" id="btnNewPalette">+ New Palette</button>
+      <button class="btn btn-secondary" id="btnSavePalette">💾 Save Current</button>
+      <button class="btn btn-secondary" id="btnExportPalette">📤 Export</button>
+    </div>
+
+    <div class="select-row">
+      <select id="paletteSource">
+        <option value="custom">My Palettes</option>
+        <option value="beautiful">Curated Palettes</option>
+        <option value="material">Material Design</option>
+        <option value="tailwind">Tailwind CSS</option>
+      </select>
+      <select id="paletteSort">
+        <option value="default">Default Order</option>
+        <option value="hue">Sort by Hue</option>
+        <option value="saturation">Sort by Saturation</option>
+        <option value="luminance">Sort by Luminance</option>
+      </select>
+    </div>
+
+    <div class="section-title">
+      <span>Palettes</span>
+      <span id="paletteCount">0 palettes</span>
+    </div>
+    <div id="paletteList"></div>
+  </div>
+
+  <!-- Contrast Panel -->
+  <div class="panel" id="panel-contrast">
+    <div class="contrast-checker">
+      <div class="input-group">
+        <label>Foreground Color</label>
+        <input type="text" id="contrastFg" value="#FFFFFF" maxlength="7">
+      </div>
+      <div class="input-group" style="margin-top:6px">
+        <label>Background Color</label>
+        <input type="text" id="contrastBg" value="#E94560" maxlength="7">
+      </div>
+
+      <div class="contrast-preview" id="contrastPreview" style="background:#E94560;color:#FFFFFF">
+        Sample Text Preview
+      </div>
+
+      <div class="contrast-results" id="contrastResults"></div>
+
+      <div class="action-buttons" style="margin-top:8px">
+        <button class="btn btn-sm btn-secondary" id="btnSwapColors">⇄ Swap</button>
+        <button class="btn btn-sm btn-secondary" id="btnUseCurrentFg">Use Current</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Harmony Panel -->
+  <div class="panel" id="panel-harmony">
+    <div class="section-title"><span>Base Color</span></div>
+    <div class="color-inputs" style="grid-template-columns:1fr">
+      <div class="input-group">
+        <label>HEX</label>
+        <input type="text" id="harmonyBase" value="#E94560" maxlength="7">
+      </div>
+    </div>
+
+    <div class="section-title">
+      <span>Complementary</span>
+    </div>
+    <div class="harmony-colors" id="harmonyComplementary"></div>
+
+    <div class="section-title">
+      <span>Analogous</span>
+    </div>
+    <div class="harmony-colors" id="harmonyAnalogous"></div>
+
+    <div class="section-title">
+      <span>Triadic</span>
+    </div>
+    <div class="harmony-colors" id="harmonyTriadic"></div>
+
+    <div class="section-title">
+      <span>Split-Complementary</span>
+    </div>
+    <div class="harmony-colors" id="harmonySplit"></div>
+
+    <div class="section-title">
+      <span>Tetradic</span>
+    </div>
+    <div class="harmony-colors" id="harmonyTetradic"></div>
+  </div>
+
+  <!-- Mixer Panel -->
+  <div class="panel" id="panel-mixer">
+    <div class="mixer-section">
+      <div class="color-inputs" style="grid-template-columns:1fr 1fr">
+        <div class="input-group">
+          <label>Color A</label>
+          <input type="text" id="mixerA" value="#E94560" maxlength="7">
+        </div>
+        <div class="input-group">
+          <label>Color B</label>
+          <input type="text" id="mixerB" value="#3F51B5" maxlength="7">
+        </div>
+      </div>
+
+      <div class="slider-group">
+        <label>Mix Ratio: <span id="mixRatioLabel">50%</span></label>
+        <input type="range" id="mixRatio" min="0" max="100" value="50">
+      </div>
+
+      <div class="mixer-preview" id="mixerPreview"></div>
+
+      <div style="text-align:center;margin:8px 0">
+        <span id="mixerResult" style="font-family:monospace;font-size:14px;font-weight:700"></span>
+      </div>
+
+      <div class="action-buttons" style="justify-content:center">
+        <button class="btn btn-sm btn-secondary" id="btnMixCopy">Copy Result</button>
+        <button class="btn btn-sm btn-secondary" id="btnMixUseA">Use as A</button>
+        <button class="btn btn-sm btn-secondary" id="btnMixUseB">Use as B</button>
+      </div>
+    </div>
+
+    <div class="section-title"><span>Temperature</span></div>
+    <div style="background:var(--surface);padding:12px;border-radius:var(--radius)">
+      <div class="temp-bar" id="tempBar">
+        <div class="temp-marker" id="tempMarker"></div>
+      </div>
+      <div style="text-align:center;margin-top:4px">
+        <span id="tempValue" style="font-size:12px;font-weight:600"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Accessibility Panel -->
+  <div class="panel" id="panel-accessibility">
+    <div class="section-title"><span>Color Blindness Simulation</span></div>
+    <div class="color-inputs" style="grid-template-columns:1fr">
+      <div class="input-group">
+        <label>Base Color</label>
+        <input type="text" id="a11yColor" value="#E94560" maxlength="7">
+      </div>
+    </div>
+    <div class="blindness-sim" id="blindnessSim"></div>
+
+    <div class="section-title" style="margin-top:16px"><span>WCAG Summary</span></div>
+    <div id="wcagSummary" style="background:var(--surface);border-radius:var(--radius);padding:12px"></div>
+  </div>
+
+  <!-- New Palette Modal -->
+  <div class="modal-overlay" id="modalNewPalette">
+    <div class="modal">
+      <h3>Create New Palette</h3>
+      <input type="text" id="newPaletteName" placeholder="Palette name...">
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="btnCancelPalette">Cancel</button>
+        <button class="btn btn-primary" id="btnConfirmPalette">Create</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Export Modal -->
+  <div class="modal-overlay" id="modalExport">
+    <div class="modal">
+      <h3>Export Palette</h3>
+      <div class="export-options">
+        <button class="export-btn" data-format="css"><span class="icon">🎨</span>CSS Vars</button>
+        <button class="export-btn" data-format="tailwind"><span class="icon">🌊</span>Tailwind</button>
+        <button class="export-btn" data-format="scss"><span class="icon">💎</span>SCSS</button>
+        <button class="export-btn" data-format="json"><span class="icon">📋</span>JSON</button>
+        <button class="export-btn" data-format="ase"><span class="icon">🖼️</span>ASE</button>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="btnCloseExport">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="color-utils.js"></script>
+  <script src="palettes.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

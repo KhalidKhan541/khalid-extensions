@@ -1,0 +1,48 @@
+{
+  "manifest_version": 3,
+  "name": "Markdown Viewer",
+  "version": "1.0.0",
+  "description": "Render .md files with beautiful styling, syntax highlighting, and powerful viewing tools.",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "tabs"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "content.css",
+        "content.js",
+        "markdown-parser.js",
+        "syntax-highlight.js",
+        "icons/*"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["markdown-parser.js", "syntax-highlight.js", "content.js"],
+      "css": ["content.css"],
+      "run_at": "document_start",
+      "all_frames": false
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

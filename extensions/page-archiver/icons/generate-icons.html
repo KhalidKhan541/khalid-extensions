@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head><title>Icon Generator</title></head>
+<body>
+<script>
+const sizes = [16, 32, 48, 128];
+sizes.forEach(size => {
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  const r = size * 0.22;
+  const grad = ctx.createLinearGradient(0, 0, size, size);
+  grad.addColorStop(0, '#4A90D9');
+  grad.addColorStop(1, '#2C5F8A');
+  ctx.beginPath();
+  ctx.roundRect(0, 0, size, size, r);
+  ctx.fillStyle = grad;
+  ctx.fill();
+  const s = size / 128;
+  ctx.save();
+  ctx.translate(28 * s, 16 * s);
+  ctx.fillStyle = 'rgba(255,255,255,0.95)';
+  ctx.beginPath();
+  ctx.moveTo(0, 8 * s);
+  ctx.bezierCurveTo(0, 0, 8 * s, 0, 16 * s, 0);
+  ctx.lineTo(52 * s, 0);
+  ctx.bezierCurveTo(60 * s, 0, 64 * s, 4 * s, 64 * s, 12 * s);
+  ctx.lineTo(64 * s, 80 * s);
+  ctx.bezierCurveTo(64 * s, 88 * s, 56 * s, 96 * s, 48 * s, 96 * s);
+  ctx.lineTo(16 * s, 96 * s);
+  ctx.bezierCurveTo(0 + 8 * s, 96 * s, 0, 88 * s, 0, 80 * s);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = 'rgba(74,144,217,0.7)';
+  ctx.fillRect(12 * s, 24 * s, 32 * s, 4 * s);
+  ctx.fillStyle = '#9CB5D0';
+  for (let i = 0; i < 4; i++) {
+    const widths = [40, 36, 38, 28];
+    ctx.fillRect(12 * s, (34 + i * 8) * s, widths[i] * s, 3 * s);
+  }
+  ctx.beginPath();
+  ctx.arc(48 * s, 84 * s, 16 * s, 0, Math.PI * 2);
+  ctx.fillStyle = '#4A90D9';
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(42 * s, 84 * s);
+  ctx.lineTo(48 * s, 90 * s);
+  ctx.lineTo(58 * s, 78 * s);
+  ctx.strokeStyle = 'white';
+  ctx.lineWidth = 3.5 * s;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.stroke();
+  ctx.restore();
+  const link = document.createElement('a');
+  link.download = `icon${size}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+});
+</script>
+<p>Click above to generate icons, or use the SVG directly.</p>
+</body>
+</html>

@@ -1,0 +1,127 @@
+.json-lens-container {
+  position: relative;
+  margin: 8px 0;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  overflow: hidden;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 13px;
+}
+
+.json-lens-container:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.json-lens-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  background: #ffffff;
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.2);
+  z-index: 2147483647;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Segoe UI', -apple-system, sans-serif;
+}
+
+.json-lens-overlay .json-key {
+  color: #b45309;
+}
+
+.json-lens-overlay .json-string {
+  color: #059669;
+}
+
+.json-lens-overlay .json-number {
+  color: #2563eb;
+}
+
+.json-lens-overlay .json-boolean {
+  color: #9333ea;
+}
+
+.json-lens-overlay .json-null {
+  color: #6b7280;
+  font-style: italic;
+}
+
+.json-lens-overlay .json-bracket {
+  color: #374151;
+  font-weight: bold;
+}
+
+.json-lens-overlay .jl-tree-node {
+  cursor: pointer;
+  padding: 1px 0;
+  border-radius: 2px;
+}
+
+.json-lens-overlay .jl-tree-node:hover {
+  background: #f3f4f6;
+}
+
+.json-lens-overlay .jl-toggle {
+  display: inline-block;
+  width: 14px;
+  text-align: center;
+  color: #6b7280;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.json-lens-overlay .jl-toggle:hover {
+  color: #2563eb;
+}
+
+.jl-highlight {
+  background: #fef08a !important;
+  outline: 2px solid #d97706;
+}
+
+.jl-path-tooltip {
+  position: fixed;
+  background: #1e1e2e;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 11px;
+  z-index: 2147483647;
+  pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.jl-copy-toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1e1e2e;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 13px;
+  z-index: 2147483647;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  animation: jl-fadein 0.2s ease-in;
+}
+
+@keyframes jl-fadein {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.json-lens-container pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.json-lens-content {
+  padding: 12px;
+  overflow: auto;
+  max-height: 600px;
+  background: #fafafa;
+}

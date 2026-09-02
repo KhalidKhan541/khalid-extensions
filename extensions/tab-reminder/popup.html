@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tab Reminder</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="app" id="app">
+    <header class="header">
+      <div class="header-left">
+        <img src="icons/icon32.png" alt="Tab Reminder" class="logo">
+        <h1>Tab Reminder</h1>
+      </div>
+      <div class="header-right">
+        <button class="icon-btn" id="themeToggle" title="Toggle theme">
+          <span class="theme-icon">🌙</span>
+        </button>
+        <button class="icon-btn" id="statsBtn" title="Statistics">
+          <span>📊</span>
+        </button>
+        <button class="icon-btn" id="historyBtn" title="History">
+          <span>📜</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Tab Info -->
+    <div class="current-tab" id="currentTab">
+      <img class="tab-favicon" id="tabFavicon" src="" alt="">
+      <div class="tab-info">
+        <span class="tab-title" id="tabTitle">Loading...</span>
+        <span class="tab-url" id="tabUrl"></span>
+      </div>
+    </div>
+
+    <!-- Create Reminder Section -->
+    <section class="section" id="createSection">
+      <h2 class="section-title">Set Reminder</h2>
+
+      <!-- Reminder Type -->
+      <div class="reminder-type-tabs">
+        <button class="type-tab active" data-type="once">One-time</button>
+        <button class="type-tab" data-type="recurring">Recurring</button>
+        <button class="type-tab" data-type="site">On Return</button>
+      </div>
+
+      <!-- Quick Buttons -->
+      <div class="quick-buttons" id="quickButtons">
+        <button class="quick-btn" data-minutes="15">15 min</button>
+        <button class="quick-btn" data-minutes="30">30 min</button>
+        <button class="quick-btn" data-minutes="60">1 hr</button>
+        <button class="quick-btn" data-minutes="180">3 hr</button>
+        <button class="quick-btn" data-days="1">Tomorrow</button>
+        <button class="quick-btn" data-days="7">Next week</button>
+      </div>
+
+      <!-- Custom Time -->
+      <div class="custom-time" id="customTime">
+        <div class="time-row">
+          <div class="time-group">
+            <label for="days">Days</label>
+            <input type="number" id="days" min="0" max="365" value="0">
+          </div>
+          <div class="time-group">
+            <label for="hours">Hours</label>
+            <input type="number" id="hours" min="0" max="23" value="0">
+          </div>
+          <div class="time-group">
+            <label for="minutes">Min</label>
+            <input type="number" id="minutes" min="0" max="59" value="0">
+          </div>
+        </div>
+      </div>
+
+      <!-- Recurring Options -->
+      <div class="recurring-options hidden" id="recurringOptions">
+        <div class="time-row">
+          <div class="time-group">
+            <label for="recurEvery">Every</label>
+            <input type="number" id="recurEvery" min="1" max="999" value="30">
+          </div>
+          <div class="time-group">
+            <label for="recurUnit">Unit</label>
+            <select id="recurUnit">
+              <option value="minutes">Minutes</option>
+              <option value="hours">Hours</option>
+              <option value="days">Days</option>
+            </select>
+          </div>
+        </div>
+        <div class="time-row" id="dailyTimeRow">
+          <div class="time-group">
+            <label for="dailyTime">At time</label>
+            <input type="time" id="dailyTime" value="09:00">
+          </div>
+        </div>
+      </div>
+
+      <!-- Site-based Options -->
+      <div class="site-options hidden" id="siteOptions">
+        <div class="site-trigger-info">
+          <p>You'll be reminded when you next visit:</p>
+          <span class="site-pattern" id="sitePattern"></span>
+        </div>
+      </div>
+
+      <!-- Date/Time Picker -->
+      <div class="datetime-row">
+        <label for="dateTimePicker">Or pick a date/time:</label>
+        <input type="datetime-local" id="dateTimePicker">
+      </div>
+
+      <!-- Message -->
+      <div class="message-row">
+        <input type="text" id="reminderMessage" placeholder="Reminder message (optional)" maxlength="100">
+      </div>
+
+      <!-- Options -->
+      <div class="options-row">
+        <label class="checkbox-label">
+          <input type="checkbox" id="autoCloseTab">
+          <span>Auto-close tab</span>
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="shakeTab" checked>
+          <span>Shake tab</span>
+        </label>
+      </div>
+
+      <!-- Notification Type -->
+      <div class="notification-type">
+        <label>Notify via:</label>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input type="radio" name="notifyType" value="popup" checked>
+            <span>Popup</span>
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="notifyType" value="highlight">
+            <span>Highlight</span>
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="notifyType" value="sound">
+            <span>Sound</span>
+          </label>
+        </div>
+      </div>
+
+      <button class="primary-btn" id="setReminderBtn">
+        <span>⏰</span> Set Reminder
+      </button>
+    </section>
+
+    <!-- Active Reminders -->
+    <section class="section" id="activeSection">
+      <h2 class="section-title">
+        Active Reminders
+        <span class="badge" id="activeCount">0</span>
+      </h2>
+      <div class="reminders-list" id="activeReminders">
+        <div class="empty-state" id="noActiveReminders">
+          <span class="empty-icon">🔔</span>
+          <p>No active reminders</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Snooze Panel (hidden by default) -->
+    <div class="snooze-panel hidden" id="snoozePanel">
+      <h3>Snooze Reminder</h3>
+      <div class="snooze-buttons">
+        <button class="snooze-btn" data-minutes="5">5 min</button>
+        <button class="snooze-btn" data-minutes="15">15 min</button>
+        <button class="snooze-btn" data-minutes="60">1 hour</button>
+        <button class="snooze-btn cancel" id="cancelSnooze">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Statistics Panel -->
+    <div class="panel hidden" id="statsPanel">
+      <div class="panel-header">
+        <h2>Statistics</h2>
+        <button class="icon-btn close-panel" data-close="statsPanel">✕</button>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-value" id="statTotalSet">0</span>
+          <span class="stat-label">Reminders Set</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="statTotalCompleted">0</span>
+          <span class="stat-label">Completed</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="statTotalSnoozed">0</span>
+          <span class="stat-label">Snoozed</span>
+        </div>
+      </div>
+      <h3>Most Reminded Sites</h3>
+      <div class="top-sites" id="topSites">
+        <div class="empty-state">
+          <p>No data yet</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- History Panel -->
+    <div class="panel hidden" id="historyPanel">
+      <div class="panel-header">
+        <h2>Reminder History</h2>
+        <button class="icon-btn close-panel" data-close="historyPanel">✕</button>
+      </div>
+      <div class="history-list" id="historyList">
+        <div class="empty-state">
+          <span class="empty-icon">📜</span>
+          <p>No history yet</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="reminder-engine.js"></script>
+  <script src="sounds.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

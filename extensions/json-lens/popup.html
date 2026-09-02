@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JSON Lens</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="logo">
+        <span class="logo-icon">{}</span>
+        <span class="logo-text">JSON Lens</span>
+      </div>
+      <div class="header-actions">
+        <select id="indentSize" class="select-control" title="Indent Size">
+          <option value="2">2 spaces</option>
+          <option value="4" selected>4 spaces</option>
+          <option value="8">8 spaces</option>
+          <option value="tab">Tab</option>
+        </select>
+        <label class="toggle-control" title="Sort Keys">
+          <input type="checkbox" id="sortKeys">
+          <span class="toggle-slider"></span>
+          <span class="toggle-label">Sort</span>
+        </label>
+        <label class="toggle-control" title="Dark Theme">
+          <input type="checkbox" id="darkTheme">
+          <span class="toggle-slider"></span>
+          <span class="toggle-label">Dark</span>
+        </label>
+      </div>
+    </header>
+
+    <div class="toolbar">
+      <button id="formatBtn" class="btn btn-primary" title="Format JSON">
+        <span class="btn-icon">✨</span> Format
+      </button>
+      <button id="minifyBtn" class="btn btn-secondary" title="Minify JSON">
+        <span class="btn-icon">🗜️</span> Minify
+      </button>
+      <button id="validateBtn" class="btn btn-secondary" title="Validate JSON">
+        <span class="btn-icon">✓</span> Validate
+      </button>
+      <button id="copyBtn" class="btn btn-secondary" title="Copy to Clipboard">
+        <span class="btn-icon">📋</span> Copy
+      </button>
+      <button id="downloadBtn" class="btn btn-secondary" title="Download JSON">
+        <span class="btn-icon">💾</span> Download
+      </button>
+      <div class="toolbar-separator"></div>
+      <button id="collapseAllBtn" class="btn btn-icon-only" title="Collapse All">
+        <span class="btn-icon">⊟</span>
+      </button>
+      <button id="expandAllBtn" class="btn btn-icon-only" title="Expand All">
+        <span class="btn-icon">⊞</span>
+      </button>
+      <div class="toolbar-separator"></div>
+      <button id="convertCsvBtn" class="btn btn-small" title="Convert to CSV">CSV</button>
+      <button id="convertYamlBtn" class="btn btn-small" title="Convert to YAML">YAML</button>
+      <button id="pathQueryBtn" class="btn btn-small" title="JSONPath Query">Path</button>
+    </div>
+
+    <div class="search-bar">
+      <input type="text" id="searchInput" class="search-input" placeholder="Search in JSON...">
+      <span id="searchCount" class="search-count"></span>
+      <button id="searchPrev" class="btn btn-tiny" title="Previous">▲</button>
+      <button id="searchNext" class="btn btn-tiny" title="Next">▼</button>
+    </div>
+
+    <div class="view-toggle">
+      <button id="rawViewBtn" class="view-btn active">Raw View</button>
+      <button id="treeViewBtn" class="view-btn">Tree View</button>
+    </div>
+
+    <div id="rawView" class="editor-container">
+      <div class="line-numbers" id="lineNumbers"></div>
+      <textarea id="jsonInput" class="json-editor" spellcheck="false"
+        placeholder="Paste your JSON here, or drag & drop a JSON file..."></textarea>
+    </div>
+
+    <div id="treeView" class="tree-container" style="display:none;"></div>
+
+    <div id="statsPanel" class="stats-panel" style="display:none;">
+      <div class="stat-item"><span class="stat-label">Keys:</span> <span id="statKeys">0</span></div>
+      <div class="stat-item"><span class="stat-label">Depth:</span> <span id="statDepth">0</span></div>
+      <div class="stat-item"><span class="stat-label">Size:</span> <span id="statSize">0 B</span></div>
+      <div class="stat-item"><span class="stat-label">Types:</span> <span id="statTypes">-</span></div>
+    </div>
+
+    <div id="errorDisplay" class="error-display" style="display:none;"></div>
+
+    <div class="history-panel">
+      <button id="historyToggle" class="history-toggle">Recent (0)</button>
+      <div id="historyList" class="history-list" style="display:none;"></div>
+    </div>
+
+    <div id="pathBreadcrumb" class="path-breadcrumb" style="display:none;"></div>
+  </div>
+
+  <script src="formatter.js"></script>
+  <script src="json-tree.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

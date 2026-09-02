@@ -1,0 +1,168 @@
+#cc-magnifier {
+  position: fixed;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.3), 0 4px 20px rgba(0,0,0,0.4);
+  pointer-events: none;
+  z-index: 2147483647;
+  display: none;
+  overflow: hidden;
+  background: #000;
+  backdrop-filter: blur(0);
+}
+
+#cc-magnifier canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+#cc-magnifier-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  display: none;
+}
+
+#cc-magnifier-grid.visible {
+  display: block;
+}
+
+#cc-crosshair {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+#cc-crosshair::before,
+#cc-crosshair::after {
+  content: '';
+  position: absolute;
+  background: rgba(255,255,255,0.9);
+  box-shadow: 0 0 2px rgba(0,0,0,0.5);
+}
+
+#cc-crosshair::before {
+  top: 0; left: 50%;
+  width: 1px; height: 100%;
+  transform: translateX(-0.5px);
+}
+
+#cc-crosshair::after {
+  top: 50%; left: 0;
+  width: 100%; height: 1px;
+  transform: translateY(-0.5px);
+}
+
+#cc-center-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: 1.5px solid #fff;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(0,0,0,0.3);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+#cc-color-tooltip {
+  position: fixed;
+  z-index: 2147483647;
+  background: rgba(20, 20, 25, 0.95);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  pointer-events: none;
+  display: none;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.1);
+  white-space: nowrap;
+}
+
+#cc-color-tooltip .cc-hex {
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
+#cc-color-tooltip .cc-rgb,
+#cc-color-tooltip .cc-hsl {
+  color: rgba(255,255,255,0.7);
+}
+
+#cc-color-tooltip .cc-preview {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  border: 1px solid rgba(255,255,255,0.3);
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
+#cc-copy-notification {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2147483647;
+  background: rgba(20, 20, 25, 0.95);
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+#cc-copy-notification.show {
+  opacity: 1;
+}
+
+#cc-custom-cursor {
+  position: fixed;
+  z-index: 2147483646;
+  pointer-events: none;
+  display: none;
+}
+
+#cc-cursor-ring {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.9);
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.3);
+  position: relative;
+}
+
+#cc-cursor-color {
+  position: absolute;
+  bottom: -6px;
+  right: -6px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.3);
+}

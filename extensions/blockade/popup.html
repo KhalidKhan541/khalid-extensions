@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blockade</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="logo">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="32" height="32" rx="8" fill="#4CAF50"/>
+          <path d="M16 6L26 12V20L16 26L6 20V12L16 6Z" stroke="white" stroke-width="2" fill="none"/>
+          <path d="M12 16L15 19L21 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h1>Blockade</h1>
+      </div>
+      <button id="themeToggle" class="theme-btn" title="Toggle theme">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="10" cy="10" r="4" fill="currentColor"/>
+          <path d="M10 1V3M10 17V19M1 10H3M17 10H19M3.93 3.93L5.34 5.34M14.66 14.66L16.07 16.07M3.93 16.07L5.34 14.66M14.66 5.34L16.07 3.93" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </header>
+
+    <div class="main-toggle">
+      <div class="toggle-container">
+        <label class="toggle-switch large">
+          <input type="checkbox" id="globalToggle" checked>
+          <span class="slider"></span>
+        </label>
+        <div class="toggle-label">
+          <span class="toggle-title">Blocking Enabled</span>
+          <span class="toggle-subtitle" id="statusText">Protecting your browsing</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="site-toggle">
+      <div class="toggle-container">
+        <label class="toggle-switch">
+          <input type="checkbox" id="siteToggle" checked>
+          <span class="slider"></span>
+        </label>
+        <div class="toggle-label">
+          <span class="toggle-title">Current Site</span>
+          <span class="toggle-subtitle" id="siteName">—</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value" id="statTotal">0</div>
+        <div class="stat-label">Total Blocked</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statAds">0</div>
+        <div class="stat-label">Ads</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statTrackers">0</div>
+        <div class="stat-label">Trackers</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statToday">0</div>
+        <div class="stat-label">Today</div>
+      </div>
+    </div>
+
+    <div class="categories">
+      <h2>Blocking Categories</h2>
+      <div class="category-list">
+        <div class="category-item">
+          <div class="category-info">
+            <span class="category-icon">🚫</span>
+            <span class="category-name">Ads</span>
+          </div>
+          <label class="toggle-switch small">
+            <input type="checkbox" class="category-toggle" data-category="ads" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="category-item">
+          <div class="category-info">
+            <span class="category-icon">👁️</span>
+            <span class="category-name">Trackers</span>
+          </div>
+          <label class="toggle-switch small">
+            <input type="checkbox" class="category-toggle" data-category="trackers" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="category-item">
+          <div class="category-info">
+            <span class="category-icon">⛏️</span>
+            <span class="category-name">Cryptominers</span>
+          </div>
+          <label class="toggle-switch small">
+            <input type="checkbox" class="category-toggle" data-category="cryptominers" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="category-item">
+          <div class="category-info">
+            <span class="category-icon">🕵️</span>
+            <span class="category-name">Fingerprinters</span>
+          </div>
+          <label class="toggle-switch small">
+            <input type="checkbox" class="category-toggle" data-category="fingerprinters" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="category-item">
+          <div class="category-info">
+            <span class="category-icon">🦠</span>
+            <span class="category-name">Malware</span>
+          </div>
+          <label class="toggle-switch small">
+            <input type="checkbox" class="category-toggle" data-category="malware" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Filter Lists</h2>
+      <div class="filter-info">
+        <div class="filter-row">
+          <span class="filter-name">EasyList</span>
+          <label class="toggle-switch small">
+            <input type="checkbox" id="easyListToggle" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="filter-count">
+          <span id="filterCount">0</span> filters loaded
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Custom Lists</h2>
+      <div class="list-tabs">
+        <button class="tab-btn active" data-tab="blocklist">Block List</button>
+        <button class="tab-btn" data-tab="allowlist">Allow List</button>
+      </div>
+
+      <div class="tab-content active" id="blocklistTab">
+        <div class="input-group">
+          <input type="text" id="blockDomainInput" placeholder="Enter domain to block..." class="domain-input">
+          <button id="addBlockDomain" class="add-btn">Add</button>
+        </div>
+        <div class="domain-list" id="blockList"></div>
+      </div>
+
+      <div class="tab-content" id="allowlistTab">
+        <div class="input-group">
+          <input type="text" id="allowDomainInput" placeholder="Enter domain to whitelist..." class="domain-input">
+          <button id="addAllowDomain" class="add-btn">Add</button>
+        </div>
+        <div class="domain-list" id="allowList"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Performance</h2>
+      <div class="perf-grid">
+        <div class="perf-item">
+          <div class="perf-value" id="perfSaved">0 KB</div>
+          <div class="perf-label">Data Saved</div>
+        </div>
+        <div class="perf-item">
+          <div class="perf-value" id="perfTime">0s</div>
+          <div class="perf-label">Time Saved</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Recent Blocks <span class="log-count" id="logCount">(0)</span></h2>
+      <div class="log-container" id="logContainer">
+        <div class="log-empty">No blocked requests yet</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Actions</h2>
+      <div class="actions">
+        <button id="clearStats" class="action-btn">Clear Statistics</button>
+        <button id="clearLog" class="action-btn">Clear Log</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

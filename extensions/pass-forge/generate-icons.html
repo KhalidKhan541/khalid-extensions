@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head><title>Generate PassForge Icons</title></head>
+<body>
+<h2>PassForge Icon Generator</h2>
+<p>Open this file in a browser, then right-click each canvas and "Save image as" to the icons/ folder.</p>
+<script>
+const sizes = [16, 32, 48, 128];
+sizes.forEach(size => {
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+
+  // Background circle
+  const gradient = ctx.createRadialGradient(size/2, size/2, 0, size/2, size/2, size/2);
+  gradient.addColorStop(0, '#ff6b81');
+  gradient.addColorStop(1, '#e94560');
+  ctx.fillStyle = gradient;
+  ctx.beginPath();
+  ctx.arc(size/2, size/2, size/2, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Lock icon
+  ctx.fillStyle = 'white';
+  const lockSize = size * 0.35;
+  const lockX = size/2 - lockSize/2;
+  const lockY = size * 0.38;
+
+  // Lock body
+  ctx.beginPath();
+  ctx.roundRect(lockX, lockY, lockSize, lockSize * 0.7, size * 0.05);
+  ctx.fill();
+
+  // Lock shackle
+  ctx.strokeStyle = 'white';
+  ctx.lineWidth = Math.max(1, size * 0.06);
+  ctx.beginPath();
+  ctx.arc(size/2, lockY, lockSize * 0.3, Math.PI, 0);
+  ctx.stroke();
+
+  document.body.appendChild(canvas);
+  document.body.appendChild(document.createElement('br'));
+});
+</script>
+</body>
+</html>

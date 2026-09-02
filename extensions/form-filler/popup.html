@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form Filler</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="header-left">
+        <img src="icons/icon32.png" alt="Form Filler" class="logo">
+        <h1>Form Filler</h1>
+      </div>
+      <div class="header-actions">
+        <button id="btnImport" class="icon-btn" title="Import Profiles">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 1v10M4 7l4 4 4-4M2 13h12"/>
+          </svg>
+        </button>
+        <button id="btnExport" class="icon-btn" title="Export Profiles">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 11V1M4 5l4-4 4 4M2 13h12"/>
+          </svg>
+        </button>
+        <button id="btnSettings" class="icon-btn" title="Settings">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 1a1 1 0 011 1v1.07a5 5 0 012.06.85l.76-.76a1 1 0 011.41 0l.71.71a1 1 0 010 1.41l-.76.76A5 5 0 0113.93 7.5H15a1 1 0 010 2h-1.07a5 5 0 01-.85 2.06l.76.76a1 1 0 010 1.41l-.71.71a1 1 0 01-1.41 0l-.76-.76A5 5 0 019 14.93V16a1 1 0 01-2 0v-1.07a5 5 0 01-2.06-.85l-.76.76a1 1 0 01-1.41 0l-.71-.71a1 1 0 010-1.41l.76-.76A5 5 0 012.07 9.5H1a1 1 0 010-2h1.07a5 5 0 01.85-2.06L2.16 4.68a1 1 0 010-1.41l.71-.71a1 1 0 011.41 0l.76.76A5 5 0 017 1.07V1a1 1 0 011-1zm0 4.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5z"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="search-bar">
+      <svg class="search-icon" width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+        <path d="M11.742 10.344a6.5 6.5 0 10-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 001.415-1.414l-3.85-3.85a1.007 1.007 0 00-.115-.1zM12 6.5a5.5 5.5 0 11-11 0 5.5 5.5 0 0111 0z"/>
+      </svg>
+      <input type="text" id="searchInput" placeholder="Search profiles...">
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="profiles">Profiles</button>
+      <button class="tab" data-tab="recent">Recent</button>
+      <button class="tab" data-tab="templates">Templates</button>
+    </div>
+
+    <div class="tab-content" id="profilesTab">
+      <div class="profile-actions">
+        <button id="btnNewProfile" class="btn btn-primary">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 2a1 1 0 011 1v4h4a1 1 0 110 2H9v4a1 1 0 11-2 0V9H3a1 1 0 010-2h4V3a1 1 0 011-1z"/>
+          </svg>
+          New Profile
+        </button>
+        <select id="defaultProfileSelect" class="select-default">
+          <option value="">Set Default</option>
+        </select>
+      </div>
+
+      <div id="profilesList" class="profiles-list">
+        <div class="empty-state">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+          </svg>
+          <p>No profiles yet</p>
+          <span>Create your first profile to get started</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content hidden" id="recentTab">
+      <div id="recentList" class="profiles-list">
+        <div class="empty-state">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <p>No recent fills</p>
+          <span>Forms you fill will appear here</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content hidden" id="templatesTab">
+      <div id="templatesList" class="templates-list"></div>
+    </div>
+  </div>
+
+  <div id="profileEditor" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="editorTitle">New Profile</h2>
+        <button id="btnCloseEditor" class="icon-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="profileName">Profile Name *</label>
+          <input type="text" id="profileName" required>
+        </div>
+        <div class="form-group">
+          <label for="profileColor">Color Label</label>
+          <div class="color-picker">
+            <button class="color-option" data-color="#4285f4" style="background:#4285f4"></button>
+            <button class="color-option" data-color="#ea4335" style="background:#ea4335"></button>
+            <button class="color-option" data-color="#fbbc04" style="background:#fbbc04"></button>
+            <button class="color-option" data-color="#34a853" style="background:#34a853"></button>
+            <button class="color-option" data-color="#ff6d01" style="background:#ff6d01"></button>
+            <button class="color-option" data-color="#46bdc6" style="background:#46bdc6"></button>
+            <button class="color-option" data-color="#7b1fa2" style="background:#7b1fa2"></button>
+            <button class="color-option" data-color="#e91e63" style="background:#e91e63"></button>
+          </div>
+        </div>
+
+        <div class="section-divider">
+          <span>Personal Information</span>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input type="text" id="firstName">
+          </div>
+          <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input type="text" id="lastName">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email">
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone">
+          </div>
+        </div>
+
+        <div class="section-divider">
+          <span>Address</span>
+        </div>
+        <div class="form-group">
+          <label for="address">Street Address</label>
+          <input type="text" id="address">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="city">City</label>
+            <input type="text" id="city">
+          </div>
+          <div class="form-group">
+            <label for="state">State/Province</label>
+            <input type="text" id="state">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="zip">ZIP/Postal Code</label>
+            <input type="text" id="zip">
+          </div>
+          <div class="form-group">
+            <label for="country">Country</label>
+            <input type="text" id="country">
+          </div>
+        </div>
+
+        <div class="section-divider">
+          <span>Work</span>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="company">Company</label>
+            <input type="text" id="company">
+          </div>
+          <div class="form-group">
+            <label for="jobTitle">Job Title</label>
+            <input type="text" id="jobTitle">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="website">Website</label>
+          <input type="url" id="website">
+        </div>
+
+        <div class="form-group">
+          <label for="notes">Notes</label>
+          <textarea id="notes" rows="2"></textarea>
+        </div>
+
+        <div class="section-divider">
+          <span>Custom Fields</span>
+          <button id="btnAddCustomField" class="btn-small">+ Add</button>
+        </div>
+        <div id="customFieldsList" class="custom-fields-list"></div>
+      </div>
+      <div class="modal-footer">
+        <button id="btnCancelEditor" class="btn btn-secondary">Cancel</button>
+        <button id="btnSaveProfile" class="btn btn-primary">Save Profile</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="settingsModal" class="modal hidden">
+    <div class="modal-content modal-sm">
+      <div class="modal-header">
+        <h2>Settings</h2>
+        <button id="btnCloseSettings" class="icon-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="setting-item">
+          <label>
+            <input type="checkbox" id="settingSkipEmpty" checked>
+            Don't overwrite existing fields
+          </label>
+        </div>
+        <div class="setting-item">
+          <label>
+            <input type="checkbox" id="settingHighlight" checked>
+            Highlight fillable fields
+          </label>
+        </div>
+        <div class="setting-item">
+          <label>
+            <input type="checkbox" id="settingFloatingBtn" checked>
+            Show floating fill button
+          </label>
+        </div>
+        <div class="setting-item">
+          <label>
+            <input type="checkbox" id="settingSimulateTyping" checked>
+            Simulate typing (avoids detection)
+          </label>
+        </div>
+        <div class="setting-item">
+          <label for="settingTypingSpeed">Typing delay (ms):</label>
+          <input type="number" id="settingTypingSpeed" value="30" min="0" max="200" class="input-small">
+        </div>
+        <div class="setting-item">
+          <label for="settingColor">Highlight color:</label>
+          <input type="color" id="settingColor" value="#4285f4" class="input-color">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btnSaveSettings" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <input type="file" id="fileImport" accept=".json" class="hidden">
+
+  <script src="profiles.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

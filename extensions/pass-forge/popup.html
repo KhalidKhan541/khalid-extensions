@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PassForge</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <!-- Lock Screen -->
+  <div id="lockScreen" class="screen active">
+    <div class="lock-container">
+      <div class="lock-icon">&#128274;</div>
+      <h1>PassForge</h1>
+      <p class="subtitle">Enter master password to unlock</p>
+      <div class="input-group">
+        <input type="password" id="masterPasswordInput" placeholder="Master password" autocomplete="off">
+        <button id="toggleMasterVisibility" class="btn-icon" title="Show password">&#128065;</button>
+      </div>
+      <p id="lockError" class="error-text"></p>
+      <button id="unlockBtn" class="btn-primary">Unlock</button>
+      <div id="firstTimeSetup" class="hidden">
+        <p class="setup-hint">First time? Create a master password.</p>
+        <div class="input-group">
+          <input type="password" id="confirmMasterPassword" placeholder="Confirm master password" autocomplete="off">
+        </div>
+      </div>
+      <button id="setupBtn" class="btn-primary hidden">Create Master Password</button>
+    </div>
+  </div>
+
+  <!-- Main App -->
+  <div id="mainApp" class="screen">
+    <!-- Tab Navigation -->
+    <nav class="tab-nav">
+      <button class="tab-btn active" data-tab="generator">&#128273; Generate</button>
+      <button class="tab-btn" data-tab="vault">&#128451; Vault</button>
+      <button class="tab-btn" data-tab="settings">&#9881; Settings</button>
+    </nav>
+
+    <!-- Generator Tab -->
+    <div id="generatorTab" class="tab-content active">
+      <div class="section">
+        <h2>Password Generator</h2>
+
+        <div class="mode-toggle">
+          <button id="modePassword" class="mode-btn active">Password</button>
+          <button id="modePassphrase" class="mode-btn">Passphrase</button>
+        </div>
+
+        <!-- Password Mode -->
+        <div id="passwordMode">
+          <div class="control-group">
+            <label>Length: <span id="lengthValue">16</span></label>
+            <input type="range" id="passwordLength" min="8" max="128" value="16">
+          </div>
+
+          <div class="checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="includeUppercase" checked> Uppercase (A-Z)
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="includeLowercase" checked> Lowercase (a-z)
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="includeNumbers" checked> Numbers (0-9)
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="includeSymbols" checked> Symbols (!@#$...)
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="excludeAmbiguous"> Exclude ambiguous (0O, 1lI)
+            </label>
+          </div>
+
+          <div class="control-group">
+            <label>Number of passwords: <span id="countValue">1</span></label>
+            <input type="range" id="passwordCount" min="1" max="20" value="1">
+          </div>
+        </div>
+
+        <!-- Passphrase Mode -->
+        <div id="passphraseMode" class="hidden">
+          <div class="control-group">
+            <label>Word count: <span id="wordCountValue">4</span></label>
+            <input type="range" id="wordCount" min="3" max="12" value="4">
+          </div>
+          <div class="control-group">
+            <label>Separator</label>
+            <select id="separator">
+              <option value="-">Hyphen (-)</option>
+              <option value=".">Period (.)</option>
+              <option value="_">Underscore (_)</option>
+              <option value=" ">Space</option>
+              <option value="">None</option>
+            </select>
+          </div>
+          <label class="checkbox-label">
+            <input type="checkbox" id="capitalizeWords" checked> Capitalize words
+          </label>
+        </div>
+
+        <button id="generateBtn" class="btn-primary">Generate</button>
+      </div>
+
+      <!-- Generated Passwords -->
+      <div id="generatedResults" class="section hidden">
+        <h3>Generated</h3>
+        <div id="passwordList" class="password-list"></div>
+      </div>
+    </div>
+
+    <!-- Vault Tab -->
+    <div id="vaultTab" class="tab-content">
+      <div class="section">
+        <div class="vault-header">
+          <h2>Credential Vault</h2>
+          <button id="addCredentialBtn" class="btn-small">+ Add</button>
+        </div>
+        <input type="text" id="vaultSearch" placeholder="Search vault..." class="search-input">
+      </div>
+
+      <div id="credentialList" class="credential-list">
+        <p class="empty-state">No credentials saved yet.</p>
+      </div>
+
+      <!-- Add/Edit Credential Modal -->
+      <div id="credentialModal" class="modal hidden">
+        <div class="modal-content">
+          <h3 id="modalTitle">Add Credential</h3>
+          <input type="hidden" id="credentialId">
+          <div class="form-group">
+            <label>Site / Label</label>
+            <input type="text" id="credSite" placeholder="e.g. github.com">
+          </div>
+          <div class="form-group">
+            <label>Username / Email</label>
+            <input type="text" id="credUsername" placeholder="user@example.com">
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <div class="password-input-row">
+              <input type="password" id="credPassword" placeholder="Password">
+              <button id="toggleCredPassword" class="btn-icon" title="Show">&#128065;</button>
+              <button id="generateForCred" class="btn-small" title="Generate password">&#128273;</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Notes</label>
+            <textarea id="credNotes" rows="3" placeholder="Optional notes"></textarea>
+          </div>
+          <div class="modal-actions">
+            <button id="saveCredBtn" class="btn-primary">Save</button>
+            <button id="cancelCredBtn" class="btn-secondary">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings Tab -->
+    <div id="settingsTab" class="tab-content">
+      <div class="section">
+        <h2>Settings</h2>
+
+        <div class="setting-group">
+          <h3>Security</h3>
+          <div class="form-group">
+            <label>Auto-lock timeout (minutes)</label>
+            <input type="number" id="autoLockTimeout" min="1" max="60" value="5">
+          </div>
+          <button id="changeMasterBtn" class="btn-secondary">Change Master Password</button>
+        </div>
+
+        <div class="setting-group">
+          <h3>Default Generator</h3>
+          <div class="form-group">
+            <label>Default length</label>
+            <input type="number" id="defaultLength" min="8" max="128" value="16">
+          </div>
+          <label class="checkbox-label">
+            <input type="checkbox" id="defaultUppercase" checked> Uppercase
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" id="defaultLowercase" checked> Lowercase
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" id="defaultNumbers" checked> Numbers
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" id="defaultSymbols" checked> Symbols
+          </label>
+          <button id="saveDefaultsBtn" class="btn-secondary">Save Defaults</button>
+        </div>
+
+        <div class="setting-group">
+          <h3>Import / Export</h3>
+          <button id="exportVaultBtn" class="btn-secondary">Export Vault (Encrypted)</button>
+          <button id="importVaultBtn" class="btn-secondary">Import Vault</button>
+          <input type="file" id="importFileInput" accept=".json" class="hidden">
+        </div>
+      </div>
+
+      <!-- Change Master Password Modal -->
+      <div id="changeMasterModal" class="modal hidden">
+        <div class="modal-content">
+          <h3>Change Master Password</h3>
+          <div class="form-group">
+            <label>Current master password</label>
+            <input type="password" id="currentMasterInput" placeholder="Current password">
+          </div>
+          <div class="form-group">
+            <label>New master password</label>
+            <input type="password" id="newMasterInput" placeholder="New password">
+          </div>
+          <div class="form-group">
+            <label>Confirm new password</label>
+            <input type="password" id="confirmNewMasterInput" placeholder="Confirm new password">
+          </div>
+          <p id="changeMasterError" class="error-text"></p>
+          <div class="modal-actions">
+            <button id="confirmChangeMasterBtn" class="btn-primary">Change</button>
+            <button id="cancelChangeMasterBtn" class="btn-secondary">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <span id="lockStatus">&#128275; Unlocked</span>
+      <button id="lockBtn" class="btn-link">Lock Now</button>
+    </footer>
+  </div>
+
+  <script src="crypto.js"></script>
+  <script src="generator.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Picker</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="header-left">
+        <svg class="logo" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+          <path d="M2 17l10 5 10-5"/>
+          <path d="M2 12l10 5 10-5"/>
+        </svg>
+        <h1>CSS Picker</h1>
+      </div>
+      <div class="header-right">
+        <button id="toggle-inspector" class="btn btn-primary" title="Toggle Inspector (Ctrl+Shift+C)">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/>
+            <path d="M13 13l6 6"/>
+          </svg>
+          <span id="inspector-status">Start Inspector</span>
+        </button>
+        <button id="refresh" class="btn btn-icon" title="Refresh">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M23 4v6h-6"/>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="info">Info</button>
+      <button class="tab" data-tab="styles">Styles</button>
+      <button class="tab" data-tab="computed">Computed</button>
+      <button class="tab" data-tab="box-model">Box Model</button>
+      <button class="tab" data-tab="palette">Colors</button>
+      <button class="tab" data-tab="fonts">Fonts</button>
+      <button class="tab" data-tab="variables">Variables</button>
+      <button class="tab" data-tab="media">Media</button>
+    </div>
+
+    <div class="content">
+      <div id="no-selection" class="empty-state">
+        <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.4">
+          <path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/>
+          <path d="M13 13l6 6"/>
+        </svg>
+        <p>Click the inspector button or press <kbd>Ctrl+Shift+C</kbd> to start inspecting elements</p>
+      </div>
+
+      <div id="panel-info" class="panel hidden">
+        <div class="panel-header">
+          <h3>Element Info</h3>
+          <button class="btn btn-sm btn-copy" data-copy="selector">Copy Selector</button>
+        </div>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Tag</span>
+            <span id="el-tag" class="info-value tag"></span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">ID</span>
+            <span id="el-id" class="info-value"></span>
+          </div>
+          <div class="info-item full-width">
+            <span class="info-label">Classes</span>
+            <span id="el-classes" class="info-value"></span>
+          </div>
+          <div class="info-item full-width">
+            <span class="info-label">Selector</span>
+            <code id="el-selector" class="info-value code"></code>
+          </div>
+          <div class="info-item full-width">
+            <span class="info-label">Breadcrumb</span>
+            <div id="el-breadcrumb" class="breadcrumb"></div>
+          </div>
+          <div class="info-item full-width">
+            <span class="info-label">Dimensions</span>
+            <span id="el-dimensions" class="info-value"></span>
+          </div>
+          <div class="info-item full-width">
+            <span class="info-label">Position</span>
+            <span id="el-position" class="info-value"></span>
+          </div>
+        </div>
+      </div>
+
+      <div id="panel-styles" class="panel hidden">
+        <div class="panel-header">
+          <h3>CSS Rules</h3>
+          <button class="btn btn-sm btn-copy" data-copy="all-rules">Copy All</button>
+        </div>
+        <div class="panel-actions">
+          <input type="text" id="style-filter" class="input" placeholder="Filter properties...">
+        </div>
+        <div id="css-rules" class="rules-list"></div>
+      </div>
+
+      <div id="panel-computed" class="panel hidden">
+        <div class="panel-header">
+          <h3>Computed Styles</h3>
+          <button class="btn btn-sm btn-copy" data-copy="computed">Copy All</button>
+        </div>
+        <div class="panel-actions">
+          <input type="text" id="computed-filter" class="input" placeholder="Filter properties...">
+          <select id="computed-sort" class="select">
+            <option value="name">Sort by Name</option>
+            <option value="value">Sort by Value</option>
+          </select>
+        </div>
+        <div id="computed-styles" class="styles-list"></div>
+      </div>
+
+      <div id="panel-box-model" class="panel hidden">
+        <div class="panel-header">
+          <h3>Box Model</h3>
+        </div>
+        <div id="box-model-container" class="box-model-wrapper"></div>
+        <div class="box-model-info">
+          <div class="info-row">
+            <span class="info-label">Sizing</span>
+            <span id="box-sizing" class="info-value"></span>
+          </div>
+        </div>
+      </div>
+
+      <div id="panel-palette" class="panel hidden">
+        <div class="panel-header">
+          <h3>Color Palette</h3>
+          <button class="btn btn-sm btn-copy" data-copy="colors">Copy All</button>
+        </div>
+        <div id="color-palette" class="palette-grid"></div>
+      </div>
+
+      <div id="panel-fonts" class="panel hidden">
+        <div class="panel-header">
+          <h3>Font Summary</h3>
+          <button class="btn btn-sm btn-copy" data-copy="fonts">Copy All</button>
+        </div>
+        <div id="font-summary" class="font-list"></div>
+      </div>
+
+      <div id="panel-variables" class="panel hidden">
+        <div class="panel-header">
+          <h3>CSS Variables</h3>
+          <button class="btn btn-sm btn-copy" data-copy="variables">Copy All</button>
+        </div>
+        <div id="css-variables" class="variables-list"></div>
+      </div>
+
+      <div id="panel-media" class="panel hidden">
+        <div class="panel-header">
+          <h3>Media Queries</h3>
+          <button class="btn btn-sm btn-copy" data-copy="media">Copy All</button>
+        </div>
+        <div id="media-queries" class="media-list"></div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <span id="element-count">0 elements on page</span>
+      <span id="status-text">Ready</span>
+    </footer>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

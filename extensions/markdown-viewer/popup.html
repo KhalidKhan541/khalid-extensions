@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markdown Viewer</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <header class="popup-header">
+      <div class="logo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="24" height="24" rx="4" fill="#4A5568"/>
+          <path d="M4 7h3l2 4 2-4h3v10h-2.5V10.5L11 14l-1.5-3.5V17H7V7H4z" fill="white"/>
+          <path d="M16 7l3 10h-2l-.6-2h-2.8l-.6 2h-2l3-10h2zm-.5 6h-1l.5-1.5.5 1.5z" fill="white"/>
+        </svg>
+        <h1>Markdown Viewer</h1>
+      </div>
+    </header>
+
+    <div class="popup-body">
+      <div id="page-status" class="status-bar">
+        <span class="status-dot"></span>
+        <span class="status-text">Not a markdown page</span>
+      </div>
+
+      <div class="section">
+        <label class="section-label">Theme</label>
+        <div class="theme-grid" id="theme-selector">
+          <button class="theme-btn active" data-theme="light" title="Light">
+            <span class="theme-preview light"></span>
+            <span>Light</span>
+          </button>
+          <button class="theme-btn" data-theme="dark" title="Dark">
+            <span class="theme-preview dark"></span>
+            <span>Dark</span>
+          </button>
+          <button class="theme-btn" data-theme="github" title="GitHub">
+            <span class="theme-preview github"></span>
+            <span>GitHub</span>
+          </button>
+          <button class="theme-btn" data-theme="solarized" title="Solarized">
+            <span class="theme-preview solarized"></span>
+            <span>Solarized</span>
+          </button>
+          <button class="theme-btn" data-theme="dracula" title="Dracula">
+            <span class="theme-preview dracula"></span>
+            <span>Dracula</span>
+          </button>
+          <button class="theme-btn" data-theme="nord" title="Nord">
+            <span class="theme-preview nord"></span>
+            <span>Nord</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="section">
+        <label class="section-label">Font Size: <span id="font-size-value">16</span>px</label>
+        <input type="range" id="font-size" min="12" max="24" value="16" class="slider">
+      </div>
+
+      <div class="section">
+        <label class="section-label">Line Width: <span id="line-width-value">800</span>px</label>
+        <input type="range" id="line-width" min="400" max="1200" value="800" class="slider">
+      </div>
+
+      <div class="section">
+        <label class="section-label">Zoom: <span id="zoom-value">100</span>%</label>
+        <input type="range" id="zoom" min="50" max="200" value="100" class="slider">
+      </div>
+
+      <div class="section">
+        <label class="section-label">View Mode</label>
+        <div class="button-group" id="view-mode">
+          <button class="group-btn active" data-mode="rendered">Rendered</button>
+          <button class="group-btn" data-mode="raw">Raw</button>
+          <button class="group-btn" data-mode="split">Split</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="toggle-row">
+          <label class="section-label no-margin">Table of Contents</label>
+          <label class="toggle">
+            <input type="checkbox" id="toc-toggle" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="stats" id="word-stats">
+          <span class="stat"><strong id="word-count">0</strong> words</span>
+          <span class="stat-divider">|</span>
+          <span class="stat"><strong id="reading-time">0</strong> min read</span>
+        </div>
+      </div>
+
+      <div class="section actions">
+        <button class="action-btn" id="btn-copy-raw" title="Copy raw markdown">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          Copy Raw
+        </button>
+        <button class="action-btn" id="btn-download-html" title="Download as HTML">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download HTML
+        </button>
+        <button class="action-btn" id="btn-print" title="Print this page">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 6,2 18,2 18,9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Print
+        </button>
+      </div>
+
+      <div class="section">
+        <div class="toggle-row">
+          <label class="section-label no-margin">Syntax Highlighting</label>
+          <label class="toggle">
+            <input type="checkbox" id="syntax-toggle" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="section">
+        <details class="shortcuts-details">
+          <summary class="section-label clickable">Keyboard Shortcuts</summary>
+          <div class="shortcuts-list">
+            <div class="shortcut"><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>M</kbd> <span>Toggle view</span></div>
+            <div class="shortcut"><kbd>Ctrl</kbd>+<kbd>+</kbd> <span>Zoom in</span></div>
+            <div class="shortcut"><kbd>Ctrl</kbd>+<kbd>-</kbd> <span>Zoom out</span></div>
+            <div class="shortcut"><kbd>Ctrl</kbd>+<kbd>0</kbd> <span>Reset zoom</span></div>
+            <div class="shortcut"><kbd>T</kbd> <span>Toggle TOC</span></div>
+            <div class="shortcut"><kbd>P</kbd> <span>Print</span></div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

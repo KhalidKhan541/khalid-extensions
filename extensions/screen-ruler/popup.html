@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Screen Ruler</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <header class="popup-header">
+      <div class="logo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M2 2h20v20H2z"/>
+          <path d="M2 8h4M2 14h4M2 20h4"/>
+          <path d="M8 2v4M14 2v4M20 2v4"/>
+        </svg>
+        <h1>Screen Ruler</h1>
+      </div>
+      <button id="settingsBtn" class="icon-btn" title="Settings">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/>
+        </svg>
+      </button>
+    </header>
+
+    <div id="mainPanel" class="panel active">
+      <div class="control-group">
+        <button id="toggleRuler" class="toggle-btn active">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M2 2h20v20H2z"/>
+            <path d="M2 8h4M2 14h4M2 20h4"/>
+            <path d="M8 2v4M14 2v4M20 2v4"/>
+          </svg>
+          <span>Ruler: ON</span>
+        </button>
+      </div>
+
+      <div class="control-group">
+        <label class="control-label">Measurement Mode</label>
+        <div class="mode-selector">
+          <button class="mode-btn active" data-mode="point-to-point" title="Point to Point">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="4" cy="4" r="2"/><circle cx="20" cy="20" r="2"/>
+              <path d="M6 6l12 12"/>
+            </svg>
+            <span>P2P</span>
+          </button>
+          <button class="mode-btn" data-mode="element-inspector" title="Element Inspector">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <path d="M3 9h18M9 3v18"/>
+            </svg>
+            <span>Inspect</span>
+          </button>
+          <button class="mode-btn" data-mode="grid" title="Grid Overlay">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18"/>
+              <path d="M3 9h18M3 15h18M9 3v18M15 3v18"/>
+            </svg>
+            <span>Grid</span>
+          </button>
+          <button class="mode-btn" data-mode="color-picker" title="Color Picker">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 011.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>
+            </svg>
+            <span>Color</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label class="control-label">Units</label>
+        <div class="unit-selector">
+          <button class="unit-btn active" data-unit="px">px</button>
+          <button class="unit-btn" data-unit="rem">rem</button>
+          <button class="unit-btn" data-unit="em">em</button>
+          <button class="unit-btn" data-unit="%">%</button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label class="control-label">Ruler Color</label>
+        <div class="color-picker-row">
+          <input type="color" id="rulerColor" value="#FF4081">
+          <span id="rulerColorHex">#FF4081</span>
+        </div>
+      </div>
+
+      <div class="control-group" id="gridSettings" style="display:none;">
+        <label class="control-label">Grid Settings</label>
+        <div class="grid-controls">
+          <div class="grid-row">
+            <label>Size</label>
+            <input type="range" id="gridSize" min="10" max="200" value="50">
+            <span id="gridSizeVal">50px</span>
+          </div>
+          <div class="grid-row">
+            <label>Color</label>
+            <input type="color" id="gridColor" value="#2196F3">
+          </div>
+          <div class="grid-row">
+            <label>Opacity</label>
+            <input type="range" id="gridOpacity" min="10" max="100" value="30">
+            <span id="gridOpacityVal">30%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <button id="screenshotBtn" class="action-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+            <circle cx="12" cy="13" r="4"/>
+          </svg>
+          Screenshot with Measurements
+        </button>
+      </div>
+
+      <div class="control-group">
+        <button id="clearMeasurements" class="action-btn secondary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+          </svg>
+          Clear Measurements
+        </button>
+      </div>
+
+      <div class="control-group">
+        <label class="control-label">Keyboard Shortcuts</label>
+        <div class="shortcuts-list">
+          <div class="shortcut"><kbd>R</kbd> Toggle ruler</div>
+          <div class="shortcut"><kbd>G</kbd> Toggle grid</div>
+          <div class="shortcut"><kbd>Esc</kbd> Cancel/Reset</div>
+          <div class="shortcut"><kbd>C</kbd> Color picker</div>
+          <div class="shortcut"><kbd>Delete</kbd> Clear all</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="settingsPanel" class="panel">
+      <div class="settings-header">
+        <button id="backBtn" class="icon-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+        </button>
+        <h2>Settings</h2>
+      </div>
+
+      <div class="control-group">
+        <label class="control-label">Font Size (rem/em)</label>
+        <div class="grid-row">
+          <input type="number" id="baseFontSize" value="16" min="8" max="48" step="1">
+          <span>px</span>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label class="control-label">Decimal Places</label>
+        <div class="grid-row">
+          <select id="decimalPlaces">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2" selected>2</option>
+            <option value="3">3</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label class="control-label">Ruler Thickness</label>
+        <div class="grid-row">
+          <input type="range" id="rulerThickness" min="20" max="60" value="30">
+          <span id="rulerThicknessVal">30px</span>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label class="control-label">Snapping</label>
+        <div class="toggle-row">
+          <label class="toggle-switch">
+            <input type="checkbox" id="snapEnabled" checked>
+            <span class="slider"></span>
+          </label>
+          <span>Snap to elements</span>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label class="control-label">Show Coordinates</label>
+        <div class="toggle-row">
+          <label class="toggle-switch">
+            <input type="checkbox" id="showCoordinates" checked>
+            <span class="slider"></span>
+          </label>
+          <span>Display cursor position</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="historyPanel" class="panel">
+      <div class="settings-header">
+        <button id="backBtn2" class="icon-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+        </button>
+        <h2>History</h2>
+      </div>
+      <div id="historyList" class="history-list">
+        <p class="empty-history">No measurements yet</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+/* Dark Mode Plus - Injected base styles */
+/* These styles are injected before content.js runs to prevent flash */
+html.dmp-active {
+  color-scheme: dark !important;
+}
+
+html.dmp-active body,
+html.dmp-active * {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+html.dmp-transition-instant * {
+  transition: none !important;
+}
+
+html.dmp-transition-slow * {
+  transition: background-color 1s ease, color 1s ease, border-color 1s ease, box-shadow 1s ease !important;
+}

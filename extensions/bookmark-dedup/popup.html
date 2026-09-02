@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bookmark Dedup</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <svg class="logo" width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M5 2h14a1 1 0 011 1v19l-8-4-8 4V3a1 1 0 011-1z" fill="#4285f4"/>
+          <path d="M9 12h6M12 9v6" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <h1>Bookmark Dedup</h1>
+      </div>
+      <div class="header-actions">
+        <button id="btn-export" class="btn-icon" title="Export Report">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+          </svg>
+        </button>
+        <button id="btn-settings" class="btn-icon" title="Settings">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Dashboard -->
+    <section id="dashboard" class="dashboard">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-value" id="stat-total">0</span>
+          <span class="stat-label">Total Bookmarks</span>
+        </div>
+        <div class="stat-card stat-duplicates">
+          <span class="stat-value" id="stat-duplicates">0</span>
+          <span class="stat-label">Duplicates</span>
+        </div>
+        <div class="stat-card stat-broken">
+          <span class="stat-value" id="stat-broken">0</span>
+          <span class="stat-label">Broken Links</span>
+        </div>
+        <div class="stat-card stat-empty">
+          <span class="stat-value" id="stat-empty">0</span>
+          <span class="stat-label">Empty Folders</span>
+        </div>
+      </div>
+      <div class="scan-controls">
+        <button id="btn-scan" class="btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+          </svg>
+          Scan Bookmarks
+        </button>
+        <button id="btn-cleanup-all" class="btn-danger" disabled>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+          </svg>
+          One-Click Cleanup
+        </button>
+      </div>
+      <div id="progress-container" class="progress-container hidden">
+        <div class="progress-bar">
+          <div id="progress-fill" class="progress-fill"></div>
+        </div>
+        <span id="progress-text" class="progress-text">Scanning...</span>
+      </div>
+    </section>
+
+    <!-- Tabs -->
+    <nav class="tabs">
+      <button class="tab active" data-tab="duplicates">
+        Duplicates <span class="badge" id="tab-duplicates">0</span>
+      </button>
+      <button class="tab" data-tab="broken">
+        Broken <span class="badge" id="tab-broken">0</span>
+      </button>
+      <button class="tab" data-tab="empty">
+        Empty <span class="badge" id="tab-empty">0</span>
+      </button>
+      <button class="tab" data-tab="similar">
+        Similar <span class="badge" id="tab-similar">0</span>
+      </button>
+    </nav>
+
+    <!-- Tab Panels -->
+    <main class="panels">
+      <!-- Duplicates Panel -->
+      <section id="panel-duplicates" class="panel active">
+        <div class="panel-toolbar">
+          <select id="sort-duplicates" class="select">
+            <option value="most">Most Duplicates</option>
+            <option value="newest">Newest</option>
+            <option value="oldest">Oldest</option>
+            <option value="folder">By Folder</option>
+          </select>
+          <div class="toolbar-actions">
+            <button id="btn-keep-first-all" class="btn-sm" disabled>Keep First (All)</button>
+            <button id="btn-delete-selected" class="btn-sm btn-danger" disabled>Delete Selected</button>
+          </div>
+        </div>
+        <div id="duplicates-list" class="results-list">
+          <div class="empty-state">
+            <p>No duplicates found. Click "Scan Bookmarks" to start.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Broken Panel -->
+      <section id="panel-broken" class="panel">
+        <div class="panel-toolbar">
+          <button id="btn-delete-broken" class="btn-sm btn-danger" disabled>Delete All Broken</button>
+        </div>
+        <div id="broken-list" class="results-list">
+          <div class="empty-state">
+            <p>No broken links found yet.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Empty Folders Panel -->
+      <section id="panel-empty" class="panel">
+        <div class="panel-toolbar">
+          <button id="btn-delete-empty" class="btn-sm btn-danger" disabled>Delete All Empty Folders</button>
+        </div>
+        <div id="empty-list" class="results-list">
+          <div class="empty-state">
+            <p>No empty folders found yet.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Similar Panel -->
+      <section id="panel-similar" class="panel">
+        <div class="panel-toolbar">
+          <span class="toolbar-hint">Same domain, different paths</span>
+        </div>
+        <div id="similar-list" class="results-list">
+          <div class="empty-state">
+            <p>No similar bookmarks found yet.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Undo Toast -->
+    <div id="undo-toast" class="undo-toast hidden">
+      <span id="undo-message">Changes applied</span>
+      <button id="btn-undo" class="btn-undo">Undo</button>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="modal-settings" class="modal hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Settings</h2>
+          <button id="btn-close-settings" class="btn-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 6L6 18M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <label class="setting-row">
+            <span>Auto-scan on bookmark changes</span>
+            <input type="checkbox" id="setting-auto-scan" checked>
+          </label>
+          <label class="setting-row">
+            <span>Check broken links (requires network)</span>
+            <input type="checkbox" id="setting-check-broken" checked>
+          </label>
+          <label class="setting-row">
+            <span>Include fragments in URL matching</span>
+            <input type="checkbox" id="setting-include-fragments">
+          </label>
+          <label class="setting-row">
+            <span>Treat www/non-www as same</span>
+            <input type="checkbox" id="setting-normalize-www" checked>
+          </label>
+          <label class="setting-row">
+            <span>Treat http/https as same</span>
+            <input type="checkbox" id="setting-normalize-protocol" checked>
+          </label>
+          <label class="setting-row">
+            <span>Background scan interval (minutes, 0 = off)</span>
+            <input type="number" id="setting-scan-interval" value="60" min="0" max="1440" class="input-number">
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="storage.js"></script>
+  <script src="scanner.js"></script>
+  <script src="cleaner.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
